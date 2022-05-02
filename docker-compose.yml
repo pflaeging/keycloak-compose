@@ -1,0 +1,41 @@
+version: '3'
+
+services:
+  keycloak:
+    image: quay.io/keycloak/keycloak:18.0.0
+    command: ['start', '--hostname-strict', 'false']
+    links:
+      - postgres
+    environment:
+      - KEYCLOAK_ADMIN=admin
+      - KEYCLOAK_ADMIN_PASSWORD=Password
+      - DB_PASSWORD=KeyCloak
+      - DB_USER=keycloak
+      - DB_DATABASE=keycloak
+      - DB_VENDOR=postgres
+      - PROXY_ADDRESS_FORWARDING=true
+      - KC_HTTPS_KEY_STORE_PASSWORD=password
+      - KC_HTTPS_KEY_STORE_FILE=/opt/keycloak/conf/keycloak.keystore
+    volumes:
+      - ./keycloak.keystore:/opt/keycloak/conf/keycloak.keystore
+    depends_on:
+      - postgres
+    restart: always
+    ports:
+      - 8443:8443
+      - 8080:8080
+    networks:
+      - default
+
+  postgres:
+    image: postgres:14
+    ports:
+      - 15432:5432
+    environment:
+      POSTGRES_PASSWORD: KeyCloak
+      POSTGRES_USER: keycloak
+    volumes:
+      - ./pg-data:/var/lib/postgresql/data
+    restart: always
+    networks:
+      - default
