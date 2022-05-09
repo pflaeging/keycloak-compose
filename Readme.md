@@ -24,15 +24,20 @@ Pay special attention to:
 - look for matching password and users:
   - DB_PASSWORD == POSTGRES_PASSWORD
   - DB_USER == POSTGRES_USER
+  or
+  - DB_PASSWORD == MARIADB_PASSWORD
+  - DB_USER == MARIADB_USER
+
 
 You have to backup to persistent storages:
 
-- ./pg-data (the postgres database)
+- ./pg-data (the postgres database) or
+- ./mariadb-data (the mariadb database)
 - ./keycloak.keystore (your TLS certificate keystore)
 
 ### run
 
-- Start your workload with `docker-compose up -d`
+- Start your workload with `docker-compose up -d -f docker-compose-mariadb.yaml` or `docker-compose up -d -f docker-compose-postgresql.yaml`
 - check the running system with `docker-compose ps`
 - check the logs with `docker-compose logs` (`-f` for follow mode)
 - stop with `docker-compose down`
