@@ -19,6 +19,7 @@ services:
       - KC_CACHE_CONFIG_FILE=cache-ispn-jdbc-ping.xml
       - KC_HTTPS_KEY_STORE_PASSWORD=password
       - KC_HTTPS_KEY_STORE_FILE=/opt/keycloak/conf/keycloak.keystore
+      - JGROUPS_DISCOVERY_EXTERNAL_IP=${MYIP}
     volumes:
       - ./cache-ispn-jdbc-ping.xml:/opt/keycloak/conf/cache-ispn-jdbc-ping.xml:ro
       - ./keycloak.keystore:/opt/keycloak/conf/keycloak.keystore
