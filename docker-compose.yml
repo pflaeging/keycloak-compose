@@ -3,20 +3,24 @@ version: '3'
 services:
   keycloak:
     image: quay.io/keycloak/keycloak:19.0.1
-    command: ['start', '--hostname-strict', 'false']
+    command: ['start']
     environment:
       - KEYCLOAK_ADMIN=admin
       - KEYCLOAK_ADMIN_PASSWORD=Password
       - KC_DB=postgres
+      - KC_DB_URL_HOST=kctestdb.pfpk.pro
+      - KC_DB_SCHEMA=public
+      - KC_DB_URL_DATABASE=keycloak
       - KC_DB_PASSWORD=KeyCloak
       - KC_DB_USERNAME=keycloak
-      - KC_DB_URL="jdbc:postgresql://kctestdb.pfpk.pro/keycloak"
+      - KC_HOSTNAME_STRICT=false
+      - KC_HTTP_ENABLED=true
       - PROXY_ADDRESS_FORWARDING=true
+      - KC_CACHE_CONFIG_FILE=cache-ispn-jdbc-ping.xml
       - KC_HTTPS_KEY_STORE_PASSWORD=password
       - KC_HTTPS_KEY_STORE_FILE=/opt/keycloak/conf/keycloak.keystore
-      - KC_CACHE_STACK=kubernetes
-      - JAVA_OPTS_APPEND="-Djgroups.dns.query=kctest.pfpk.pro"
     volumes:
+      - ./cache-ispn-jdbc-ping.xml:/opt/keycloak/conf/cache-ispn-jdbc-ping.xml:ro
       - ./keycloak.keystore:/opt/keycloak/conf/keycloak.keystore
     restart: always
     ports:
