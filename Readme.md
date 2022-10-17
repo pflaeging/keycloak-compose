@@ -7,6 +7,16 @@ Quick startpoint to run keycloak in a containerized deployment. Normally kuberne
 - docker
 - docker-compose
 
+
+Example AlmaLinux (RHEL Clone):
+
+~~~shell
+sudo dnf config-manager --add-repo https://download.docker.com/linux/centos/docker-ce.repo
+sudo dnf remove podman buildah
+sudo dnf install docker-ce docker-ce-cli containerd.io docker-compose-plugin
+sudo systemctl enable docker.service --now
+~~~
+
 ## start
 
 ### first time
@@ -27,7 +37,6 @@ Pay special attention to:
   or
   - DB_PASSWORD == MARIADB_PASSWORD
   - DB_USER == MARIADB_USER
-
 
 You have to backup to persistent storages:
 

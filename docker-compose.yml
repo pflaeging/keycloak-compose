@@ -31,7 +31,6 @@ services:
 
   postgres:
     image: postgres:14
-#    user: "501:20"
     ports:
       - 15432:5432
     environment:
