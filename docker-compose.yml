@@ -19,7 +19,7 @@ services:
       - ./keycloak.keystore:/opt/keycloak/conf/keycloak.keystore
     restart: always
     ports:
-      - 8443:8443
-      - 8080:8080
+      - 18443:8443
+      - 18080:8080
     networks:
       - default
