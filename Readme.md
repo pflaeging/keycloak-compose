@@ -7,7 +7,6 @@ Quick startpoint to run keycloak in a containerized deployment. Normally kuberne
 - docker
 - docker-compose
 
-
 Example AlmaLinux (RHEL Clone):
 
 ~~~shell

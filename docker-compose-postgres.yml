@@ -1,0 +1,16 @@
+version: '3'
+
+services:
+  postgres:
+    image: postgres:14
+    ports:
+      - 5432:5432
+    environment:
+      POSTGRES_PASSWORD: KeyCloak
+      POSTGRES_USER: keycloak
+      PGDATA: /var/lib/postgresql/data/pgdata
+    volumes:
+      - ./pg-data:/var/lib/postgresql/data
+    restart: always
+    networks:
+      - default
