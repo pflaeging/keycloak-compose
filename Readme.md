@@ -2,6 +2,8 @@
 
 Quick startpoint to run keycloak in a containerized deployment. Normally kubernetes would be a better environment, but YMMV.
 
+This setup is tested with KeyCloak 19.0.1 (quarkus edition) and PostgreSQL 14 
+
 ## Install
 
 - docker
@@ -67,7 +69,7 @@ Now you can start on 3 machines (for my test I'm not using redundant DB's. You s
     export MYIP=192.168.99.33 # insert your IP address for the first machine
     docker compose up
     ~~~
-    
+
 You have to backup to persistent storages:
 
 - `./pg-data` (the postgres database) on the DB-machine
