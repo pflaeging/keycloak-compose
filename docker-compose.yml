@@ -27,5 +27,6 @@ services:
     ports:
       - 18443:8443
       - 18080:8080
+      - 7800:7800
     networks:
       - default
