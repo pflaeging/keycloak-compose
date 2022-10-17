@@ -17,8 +17,6 @@ services:
       - JAVA_OPTS_APPEND="-Djgroups.dns.query=kctest.pfpk.pro"
     volumes:
       - ./keycloak.keystore:/opt/keycloak/conf/keycloak.keystore
-    depends_on:
-      - postgres
     restart: always
     ports:
       - 8443:8443
