@@ -2,7 +2,7 @@
 
 Quick startpoint to run keycloak in a containerized deployment. Normally kubernetes would be a better environment, but YMMV.
 
-## install
+## Install
 
 - docker
 - docker-compose
@@ -16,11 +16,21 @@ sudo dnf install docker-ce docker-ce-cli containerd.io docker-compose-plugin
 sudo systemctl enable docker.service --now
 ~~~
 
-## start
 
-### first time
+## Preface
 
-Generate a certificate:
+we have 3 virtual machines in our testcase:
+
+- DB test server (machine1)
+- KeyCloak cluster member (machine2 and machine3)
+
+This repo helps you to deploy a KeyCloak cluster with infinispan based on docker compose.
+We will use machine1 as DB server with postgres. You should use a redundant installation (either as docker, on k8s or as vm's). The other 2 machines implement a 2 node KeyCloak cluster with infinispan (with jdbc-ping-tcp).
+You have to implement a load-balancer before the 2 nodes. It's possible to work with reencrypt (port 18443 default) or you can offload the TLS on the load-balancer (http on port 18080 default).
+
+## Start
+
+Generate a certificate and distribute it to all members:
 
 ~~~shell
 keytool -genkeypair -storepass password -storetype PKCS12 -keyalg RSA -keysize 2048 -dname "CN=server" -alias server -ext "SAN:c=DNS:localhost,IP:127.0.0.1" -keystore keycloak.keystore
@@ -29,27 +39,39 @@ keytool -genkeypair -storepass password -storetype PKCS12 -keyalg RSA -keysize 2
 Check back the passwords and configs in [./docker-compose.yaml](./docker-compose.yaml).
 Pay special attention to:
 
-- ports => on which port should it be accessible (maybe better 443 than 8443 and 80 then 8080)
+- ports => on which port should it be accessible
 - look for matching password and users:
-  - DB_PASSWORD == POSTGRES_PASSWORD
-  - DB_USER == POSTGRES_USER
-  or
-  - DB_PASSWORD == MARIADB_PASSWORD
-  - DB_USER == MARIADB_USER
+  - KC_DB_PASSWORD (docker-compose.yaml) == POSTGRES_PASSWORD (docker-compose-postgres.yaml)
+  - KC_DB_USERNAME (docker-compose.yaml) == POSTGRES_USER (docker-compose-postgres.yaml)
 
+Now you can start on 3 machines (for my test I'm not using redundant DB's. You should use them in production)
+
+- machine1 (DB-test machine)
+
+    ~~~shell
+    docker compose -f docker-compose-postgres.yml up
+    ~~~
+
+- machine2 (KeyCloak cluster member 1)
+
+    ~~~shell
+    # replace my.database.server.net in docker-compose.yml with your DB-machine (machine1 in our example)
+    export MYIP=192.168.33.11 # insert your IP address for the first machine
+    docker compose up
+    ~~~
+
+- machine3  (KeyCloak cluster member 1)
+
+    ~~~shell
+    # replace my.database.server.net in docker-compose.yml with your DB-machine (machine1 in our example)
+    export MYIP=192.168.99.33 # insert your IP address for the first machine
+    docker compose up
+    ~~~
+    
 You have to backup to persistent storages:
 
-- ./pg-data (the postgres database) or
-- ./mariadb-data (the mariadb database)
-- ./keycloak.keystore (your TLS certificate keystore)
-
-### run
-
-- Start your workload with `docker-compose up -d -f docker-compose-mariadb.yaml` or `docker-compose up -d -f docker-compose-postgresql.yaml`
-- check the running system with `docker-compose ps`
-- check the logs with `docker-compose logs` (`-f` for follow mode)
-- stop with `docker-compose down`
-- restart with `docker-compose restart`
+- `./pg-data` (the postgres database) on the DB-machine
+- `./keycloak.keystore` (your TLS certificate keystore)
 
 ---
 Peter Pflägging <<peter@pflaeging.net>>
