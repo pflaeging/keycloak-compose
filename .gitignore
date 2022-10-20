@@ -1,3 +1,7 @@
 pg-data
 mariadb-data
 keycloak.keystore
+haproxy.pem
+haproxy.crt
+haproxy.key
+tmp/

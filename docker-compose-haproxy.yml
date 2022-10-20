@@ -1,0 +1,14 @@
+version: '3'
+services:
+  haproxy:
+    image: haproxy:alpine
+    ports:
+      - 443:443/tcp
+#      - 80:80/tcp
+#      - 1936:1936/tcp
+    volumes:
+      - ./haproxy.cfg:/usr/local/etc/haproxy/haproxy.cfg
+      - ./haproxy.pem:/usr/local/etc/haproxy/haproxy.pem
+    restart: always
+    networks:
+      - default

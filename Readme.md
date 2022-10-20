@@ -75,5 +75,25 @@ You have to backup to persistent storages:
 - `./pg-data` (the postgres database) on the DB-machine
 - `./keycloak.keystore` (your TLS certificate keystore)
 
+
+## HaProxy config
+
+Here's a haproxy container config to test with:
+
+1. Generate a cert-file for haproxy:
+
+    ~~~shell
+    openssl req -new -newkey rsa:2048 -days 365 -nodes -x509 -keyout haproxy.key -out haproxy.crt -subj "/CN=localhost"
+    cat haproxy.key haproxy.crt > haproxy.pem
+    ~~~
+
+1. Adapt your config in `haproxy.cfg` (mainly the keycloaks you want to connect to under `backend keycloak_backend`)
+
+1. Start aproriate docker-compose on your gateway machine:
+
+    ~~~shell
+    docker compose -f docker-compose-haproxy.yml up
+    ~~~
+
 ---
 Peter Pflägging <<peter@pflaeging.net>>
