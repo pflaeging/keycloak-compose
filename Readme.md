@@ -95,5 +95,7 @@ Here's a haproxy container config to test with:
     docker compose -f docker-compose-haproxy.yml up
     ~~~
 
+There's a small example for testing haproxy -> keycloak only in `docker-compose-combi.yml`.
+
 ---
 Peter Pflägging <<peter@pflaeging.net>>

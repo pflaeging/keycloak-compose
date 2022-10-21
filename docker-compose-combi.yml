@@ -46,6 +46,8 @@ services:
       - ./haproxy.cfg:/usr/local/etc/haproxy/haproxy.cfg
       - ./haproxy.pem:/usr/local/etc/haproxy/haproxy.pem
     restart: always
+    depends_on:
+      - keycloak
     networks:
       - default
 
