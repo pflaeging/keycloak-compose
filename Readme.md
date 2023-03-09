@@ -119,4 +119,4 @@ Here's a haproxy container config to test with:
 There's a small example for testing haproxy -> keycloak only in `docker-compose-combi.yml`.
 
 ---
-Peter Pflägging <<peter@pflaeging.net>>
+Peter Pfläging <<peter@pflaeging.net>>
