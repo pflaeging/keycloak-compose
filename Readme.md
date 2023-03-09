@@ -30,6 +30,27 @@ This repo helps you to deploy a KeyCloak cluster with infinispan based on docker
 We will use machine1 as DB server with postgres. You should use a redundant installation (either as docker, on k8s or as vm's). The other 2 machines implement a 2 node KeyCloak cluster with infinispan (with jdbc-ping-tcp).
 You have to implement a load-balancer before the 2 nodes. It's possible to work with reencrypt (port 18443 default) or you can offload the TLS on the load-balancer (http on port 18080 default).
 
+## Alternative quickstart
+
+Look at the directory [./example](./example/). There's a complete example for rollout.
+
+How to use it?
+
+- create 3 virtual machines with AlmaLinux minimal (or RHEL8/9 or Rocky, ...)
+- install a 3 node postgres-patroni cluster on the machines (look at <https://github.com/pflaeging/patroni-compose>)
+- on each of the 3 machines create a docker compose infra `/opt/keycloak` and copy the content of the directory `example` to the machines
+- adapt like it is mentioned in [the example Readme](./example/Readme.md)
+- create the keycloak database in the patroni cluster (like mentioned in the readme above)
+- start the docker compose on all 3 machines
+
+After this, you've got 3 nodes with postgres-patroni, etcd and haproxy as frontend and a redundant keycloak cluster with a second haproxy as front load balancer:
+
+- haproxy stats for the patroni haproxy is on http port 7000
+- haproxy stats for the keycloak lb on port 9000
+- keycloak on 443 on all three nodes
+- patroni-postgres master on port 5000
+- patroni-postgres slave on port 5001
+
 ## Start
 
 Generate a certificate and distribute it to all members:

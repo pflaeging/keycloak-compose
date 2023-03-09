@@ -1,0 +1,61 @@
+version: '3'
+
+services:
+  keycloak:
+    image: quay.io/keycloak/keycloak:21.0.1
+    command: ['start']
+    environment:
+      - KEYCLOAK_ADMIN=admin
+      - KEYCLOAK_ADMIN_PASSWORD=Password
+      - KC_DB=postgres
+      # # Replaced in .env file
+      - KC_DB_URL_HOST=${POSTGRES_HOST}
+      - KC_DB_SCHEMA=public
+      - KC_DB_URL_DATABASE=${POSTGRES_DB}
+      - KC_DB_URL_PORT=5000
+      - KC_DB_PASSWORD=${POSTGRES_PASSWD}
+      - KC_DB_USERNAME=${POSTGRES_USER}
+      - KC_HOSTNAME_STRICT=false
+      - KC_HTTP_ENABLED=true
+      - PROXY_ADDRESS_FORWARDING=true
+      - KC_CACHE_CONFIG_FILE=cache-ispn-jdbc-ping.xml
+      - KC_HTTPS_KEY_STORE_PASSWORD=password
+      - KC_HTTPS_KEY_STORE_FILE=/opt/keycloak/conf/keycloak.keystore
+      - JGROUPS_DISCOVERY_EXTERNAL_IP=${MY_IP}
+#      - KC_LOG_LEVEL=debug
+      - KC_PROXY=edge
+    volumes:
+      - ./cache-ispn-jdbc-ping.xml:/opt/keycloak/conf/cache-ispn-jdbc-ping.xml:ro
+      - ./keycloak.keystore:/opt/keycloak/conf/keycloak.keystore
+    restart: always
+    ports:
+      - 8443:8443
+      - 8080:8080
+      - 7800:7800
+    networks:
+      - default
+    extra_hosts:
+        - "testvm1.local:192.168.50.47"
+        - "testvm2.local:192.168.50.152"
+        - "testvm3.local:192.168.50.32"
+
+  haproxy:
+    image: haproxy:alpine
+    ports:
+      - 443:443/tcp
+      - 9000:9000/tcp
+#      - 80:80/tcp
+      - 1936:1936/tcp
+    volumes:
+      - ./haproxy.cfg:/usr/local/etc/haproxy/haproxy.cfg
+      - ./haproxy.pem:/usr/local/etc/haproxy/haproxy.pem
+    restart: always
+    depends_on:
+      - keycloak
+    networks:
+      - default
+    extra_hosts:
+        - "testvm1.local:192.168.50.47"
+        - "testvm2.local:192.168.50.152"
+        - "testvm3.local:192.168.50.32"
+
